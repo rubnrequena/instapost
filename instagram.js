@@ -1,8 +1,6 @@
 'use strict'
 const fs = require('fs')
 const puppeteer = require("puppeteer-core");
-var ks = require("node-key-sender");
-ks.setOption("globalDelayBetweenMillisec", 10);
 
 const DOM = require("./typings/dom");
 const { INICIO_SESION, ACEPTAR_COOKIES } = require("./typings/mensajes");

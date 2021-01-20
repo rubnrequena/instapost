@@ -22,7 +22,6 @@
     "fastify-formbody": "^5.0.0",
     "fastify-multipart": "^3.3.1",
     "fastify-plugin": "^3.0.0",
-    "node-key-sender": "^1.0.11",
     "puppeteer-core": "^5.5.0"
   },
   "devDependencies": {
