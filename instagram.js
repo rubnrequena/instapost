@@ -5,7 +5,7 @@ const puppeteer = require("puppeteer-core");
 const DOM = require("./typings/dom");
 const { INICIO_SESION, ACEPTAR_COOKIES } = require("./typings/mensajes");
 
-const DEVICE = puppeteer.devices["LG Optimus L70 landscape"];
+const DEVICE = puppeteer.devices[process.env.DEVICE];
 const NETWORK_IDLE = { waitUntil: "networkidle2" };
 
 /** @type {puppeteer.Browser} */
@@ -14,10 +14,9 @@ async function init() {
   console.log("INICIALIZANDO NAVEGADOR");
   if (!browser) {
     browser = await puppeteer.launch({
-      headless: false,
-      executablePath:
-        "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe",
-      userDataDir: "./chromeuser",
+      headless: true,
+      executablePath: process.env.CHROME_EXE,
+      userDataDir: process.env.CHROME_USER,
     });
   }
   return browser;
