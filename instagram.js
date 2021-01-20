@@ -26,10 +26,9 @@ async function init() {
  * 
  * @param {String} usuario 
  * @param {String} clave 
- * @param {String} correo 
  * @returns
  */
-function page(usuario, clave, correo) {
+function page(usuario, clave) {
   return new Promise(async (resolve, reject) => {
     const pagina = await browser.newPage();
     await pagina.emulate(DEVICE);
