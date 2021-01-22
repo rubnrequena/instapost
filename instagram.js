@@ -14,7 +14,7 @@ async function init() {
   console.log("INICIALIZANDO NAVEGADOR");
   if (!browser) {
     browser = await puppeteer.launch({
-      headless: true,
+      headless: process.env.HEADLESS,
       executablePath: process.env.CHROME_EXE,
       userDataDir: process.env.CHROME_USER,
     });
