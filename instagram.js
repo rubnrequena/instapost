@@ -22,7 +22,6 @@ async function init() {
   return browser;
 }
 /**
- * 
  * @param {String} usuario 
  * @param {String} clave 
  * @returns
@@ -54,15 +53,15 @@ function page(usuario, clave) {
     if (login) {
       console.log('ingresando datos de sesion');
       await pagina.type(
-        "#loginForm > div.Igw0E.IwRSH.eGOV_._4EzTm.kEKum > div:nth-child(3) > div > label > input",
+        DOM.USUARIO_INPUT,
         usuario
       );
       await pagina.type(
-        "#loginForm > div.Igw0E.IwRSH.eGOV_._4EzTm.kEKum > div:nth-child(4) > div > label > input",
+        DOM.CLAVE_INPUT,
         clave
       );
       await pagina.click(
-        "#loginForm > div.Igw0E.IwRSH.eGOV_._4EzTm.kEKum > div:nth-child(6) > button"
+        DOM.LOGIN_SUBMIT
       );
       await pagina.waitForNavigation(NETWORK_IDLE);
 
@@ -168,19 +167,13 @@ function post(pagina, texto, imagen) {
     ]);
     await fileChooser.accept([imagenUri]);
 
-    const siguiente =
-      "#react-root > section > div.Scmby > header > div > div.mXkkY.KDuQp > button";
-    await pagina.waitForSelector(siguiente);
-    await pagina.click(siguiente);
+    await pagina.waitForSelector(DOM.PUBLICAR_SIGUIENTE);
+    await pagina.click(DOM.PUBLICAR_SIGUIENTE);
 
-    const mensajeInput =
-      "#react-root > section > div.A9bvI > section.IpSxo > div.NfvXc > textarea";
-    await pagina.waitForSelector(mensajeInput);
-    await pagina.type(mensajeInput, texto);
+    await pagina.waitForSelector(DOM.PUBLICAR_MENSAJE);
+    await pagina.type(DOM.PUBLICAR_MENSAJE, texto);
 
-    await pagina.click(
-      "#react-root > section > div.Scmby > header > div > div.mXkkY.KDuQp > button"
-    );
+    await pagina.click(DOM.PUBLICAR_SUBMIT);
 
     await pagina.waitForNavigation(NETWORK_IDLE)
 
