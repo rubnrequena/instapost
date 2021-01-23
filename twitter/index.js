@@ -106,7 +106,7 @@ function iniciar_sesion(pagina, usuario, clave) {
       pagina.click(DOM.SESSION_SUBMIT),
       pagina.waitForNavigation(NETWORK_IDLE)
     ])
-    const html = await pagina.content();
+    /* const html = await pagina.content();
     if (html.indexOf('Iniciar sesión en Twitter')) {
       await pagina.type(DOM.USUARIO_INPUT, "584149970167")
       await pagina.type(DOM.CLAVE_INPUT, clave)
@@ -114,7 +114,7 @@ function iniciar_sesion(pagina, usuario, clave) {
         pagina.waitForNavigation(NETWORK_IDLE),
         pagina.click('#react-root > div > div > div.css-1dbjc4n.r-13qz1uu.r-417010 > main > div > div > div.css-1dbjc4n.r-13qz1uu > form > div > div:nth-child(8) > div')
       ])
-    }
+    } */
     resolve(pagina);
   });
 }
