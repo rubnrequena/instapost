@@ -2,8 +2,8 @@
 const fs = require('fs')
 const puppeteer = require("puppeteer-core");
 
-const DOM = require("./typings/dom");
-const { INICIO_SESION, ACEPTAR_COOKIES } = require("./typings/mensajes");
+const DOM = require("../typings/dom");
+const { INICIO_SESION, ACEPTAR_COOKIES } = require("../typings/mensajes");
 
 const DEVICE = puppeteer.devices[process.env.DEVICE];
 const NETWORK_IDLE = { waitUntil: "networkidle2" };
@@ -11,7 +11,7 @@ const NETWORK_IDLE = { waitUntil: "networkidle2" };
 /** @type {puppeteer.Browser} */
 let browser;
 async function init() {
-  console.log("INICIALIZANDO NAVEGADOR");
+  console.log("INICIALIZANDO INSTAGRAM");
   if (!browser) {
     browser = await puppeteer.launch({
       headless: process.env.HEADLESS,
@@ -153,11 +153,9 @@ function cerrarSesion(pagina) {
  */
 function post(pagina, texto, imagen) {
   return new Promise(async (resolve, reject) => {
-
     if (!texto || texto.length == 0) return reject('No se ha indicado texto a publicar')
     const imagenUri = `C:\\cache\\${imagen}`
     if (!fs.existsSync(imagenUri)) return reject(`Imagen ${imagenUri} no existe`)
-    pagina.bringToFront();
 
     const postBoton = await pagina.waitForSelector(DOM.POST_BUTTON);
 

@@ -1,6 +1,6 @@
 'use strict'
 
-const igm = require('../../instagram')
+const igm = require('../../instagram');
 
 const POST_SCHEMA = {
   schema: {
