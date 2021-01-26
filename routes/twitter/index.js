@@ -18,7 +18,7 @@ const POST_SCHEMA = {
   }
 }
 
-module.exports = async function (fastify, opts) {
+module.exports = function (fastify, opts) {
   fastify.post('/post', POST_SCHEMA, function (request, reply) {
     const { texto, usuario, clave } = request.body
     const file = request.raw.files.imagen
@@ -28,13 +28,14 @@ module.exports = async function (fastify, opts) {
     file.mv(fileUrl, (err) => {
       twitter.init().then(navegador => {
         return twitter.page(usuario, clave).then(pagina => {
-          reply.send('Su publicacion esta siendo procesada')
           return twitter.post(pagina, texto, fileUrl).then((post) => {
             console.log('Publicacion exitosa...', post);
-          })
+            reply.send('Su publicacion esta siendo procesada')
+          }).catch(error => console.error(error))
         })
       }).catch(error => {
-        console.log(error)
+        reply.send('⚠ Ha ocurrido un error durante la publicacion ⚠')
+        console.log(error);
       })
     })
   })
