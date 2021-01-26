@@ -22,14 +22,15 @@ async function init() {
 /**
  * @param {String} usuario 
  * @param {String} clave 
+ * @param {String} telefono
  * @returns
  */
-function page(usuario, clave) {
+function page(usuario, clave, telefono) {
   return new Promise(async (resolve, reject) => {
     const pagina = await browser.newPage();
     await pagina.goto("https://twitter.com/login", NETWORK_IDLE);
 
-    await iniciar_sesion(pagina, usuario, clave);
+    await iniciar_sesion(pagina, usuario, clave, telefono);
 
     resolve(pagina);
   }).catch(error => {
@@ -94,9 +95,10 @@ function cerrarSesion(pagina) {
  * @param {puppeteer.Page} pagina 
  * @param {String} usuario
  * @param {String} clave
+ * @param {String} telefono
  * @returns {Promise<puppeteer.Page>}
  */
-function iniciar_sesion(pagina, usuario, clave) {
+function iniciar_sesion(pagina, usuario, clave, telefono) {
   return new Promise(async (resolve, reject) => {
     const postBoton = await pagina.$(DOM.POST_BUTTON);
     if (postBoton) return resolve(pagina)
@@ -106,15 +108,14 @@ function iniciar_sesion(pagina, usuario, clave) {
       pagina.click(DOM.SESSION_SUBMIT),
       pagina.waitForNavigation(NETWORK_IDLE)
     ])
-    /* const html = await pagina.content();
-    if (html.indexOf('Iniciar sesión en Twitter')) {
-      await pagina.type(DOM.USUARIO_INPUT, "584149970167")
-      await pagina.type(DOM.CLAVE_INPUT, clave)
+    const solicitaTelefono = await pagina.$('#challenge_response')
+    if (solicitaTelefono) {
+      await solicitaTelefono.type(telefono);
       await Promise.all([
         pagina.waitForNavigation(NETWORK_IDLE),
-        pagina.click('#react-root > div > div > div.css-1dbjc4n.r-13qz1uu.r-417010 > main > div > div > div.css-1dbjc4n.r-13qz1uu > form > div > div:nth-child(8) > div')
+        pagina.click('#email_challenge_submit')
       ])
-    } */
+    }
     resolve(pagina);
   });
 }
