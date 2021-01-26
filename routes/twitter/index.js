@@ -18,7 +18,7 @@ const POST_SCHEMA = {
   }
 }
 
-module.exports = function (fastify, opts) {
+module.exports = async function (fastify, opts) {
   fastify.post('/post', POST_SCHEMA, function (request, reply) {
     const { texto, usuario, clave } = request.body
     const file = request.raw.files.imagen
