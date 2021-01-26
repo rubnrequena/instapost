@@ -116,6 +116,15 @@ function iniciar_sesion(pagina, usuario, clave, telefono) {
         pagina.click('#email_challenge_submit')
       ])
     }
+	const usuario_input = await pagina.$(DOM.USUARIO_INPUT);
+	if (usuario_input) {
+		await pagina.type(DOM.USUARIO_INPUT, telefono);
+		await pagina.type(DOM.CLAVE_INPUT, clave);
+		await Promise.all([
+		  pagina.click(DOM.SESSION_SUBMIT),
+		  pagina.waitForNavigation(NETWORK_IDLE)
+		])
+	}
     resolve(pagina);
   });
 }

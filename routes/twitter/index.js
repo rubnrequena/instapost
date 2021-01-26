@@ -28,7 +28,7 @@ module.exports = async function (fastify, opts) {
     file.mv(fileUrl, (err) => {
       twitter.init().then(navegador => {
         return twitter.page(usuario, clave, telefono).then(pagina => {
-          return twitter.post(pagina, texto, fileUrl).then((post) => {
+           return twitter.post(pagina, texto, fileUrl).then((post) => {
             console.log('Publicacion exitosa...', post);
             reply.send('Su publicacion esta siendo procesada');
           }).catch(error => console.error(error));
