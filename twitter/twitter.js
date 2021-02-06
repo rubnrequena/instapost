@@ -107,12 +107,12 @@ function iniciar_sesion(pagina, usuario, clave, telefono) {
       pagina.click(DOM.SESSION_SUBMIT),
       pagina.waitForNavigation(NETWORK_IDLE)
     ])
-    const solicitaTelefono = await pagina.$('#challenge_response')
+    const solicitaTelefono = await pagina.$(DOM.PIDE_TELEFONO)
     if (solicitaTelefono) {
       await solicitaTelefono.type(telefono);
       await Promise.all([
         pagina.waitForNavigation(NETWORK_IDLE),
-        pagina.click('#email_challenge_submit')
+        pagina.click(DOM.ENVIA_TELEFONO)
       ])
     }
     const usuario_input = await pagina.$(DOM.USUARIO_INPUT);
