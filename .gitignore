@@ -8,3 +8,5 @@ chromeuser
 .vscode
 
 .env
+
+.nyc_output
