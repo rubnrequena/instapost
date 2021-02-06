@@ -34,7 +34,7 @@ module.exports = async function (fastify, opts) {
         await twitter.iniciar();
         await twitter.post(`${texto} #${++num}`, fileUrl);
         await twitter.close();
-        console.log('pubs >>', twitter.publicaciones);
+        reply.send(twitter.publicaciones);
       } catch (error) {
         console.log('error :>> ', error);
         twitter.close();
