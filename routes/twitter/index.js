@@ -27,6 +27,10 @@ module.exports = async function (fastify, opts) {
     const fileName = `${file.md5}.${ext}`
     const fileUrl = `c:\\cache\\${fileName}`
     file.mv(fileUrl, async (err) => {
+      if (err) {
+        reply.send({ error: err });
+        return;
+      }
       const twitter = new TwitterPagina(usuario, clave, telefono)
       try {
         await twitter.iniciar();
