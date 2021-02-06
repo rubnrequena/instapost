@@ -1,6 +1,7 @@
 'use strict'
 
 const twitter = require('../../twitter')
+const TwitterPagina = require('../../twitter/twitter')
 
 const POST_SCHEMA = {
   schema: {
@@ -18,6 +19,8 @@ const POST_SCHEMA = {
   }
 }
 
+let num = 0;
+
 module.exports = async function (fastify, opts) {
   fastify.post('/post', POST_SCHEMA, function (request, reply) {
     const { texto, usuario, clave, telefono } = request.body
@@ -25,18 +28,17 @@ module.exports = async function (fastify, opts) {
     const ext = file.name.split(".").pop()
     const fileName = `${file.md5}.${ext}`
     const fileUrl = `c:\\cache\\${fileName}`
-    file.mv(fileUrl, (err) => {
-      twitter.init().then(navegador => {
-        return twitter.page(usuario, clave, telefono).then(pagina => {
-           return twitter.post(pagina, texto, fileUrl).then((post) => {
-            console.log('Publicacion exitosa...', post);
-            reply.send('Su publicacion esta siendo procesada');
-          }).catch(error => console.error(error));
-        })
-      }).catch(error => {
-        reply.send('⚠ Ha ocurrido un error durante la publicacion ⚠')
-        console.log(error);
-      })
+    file.mv(fileUrl, async (err) => {
+      const twitter = new TwitterPagina(usuario, clave, telefono)
+      try {
+        await twitter.iniciar();
+        await twitter.post(`${texto} #${++num}`, fileUrl);
+        await twitter.close();
+        console.log('pubs >>', twitter.publicaciones);
+      } catch (error) {
+        console.log('error :>> ', error);
+        twitter.close();
+      }
     })
   })
 }
