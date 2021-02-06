@@ -19,8 +19,6 @@ const POST_SCHEMA = {
   }
 }
 
-let num = 0;
-
 module.exports = async function (fastify, opts) {
   fastify.post('/post', POST_SCHEMA, function (request, reply) {
     const { texto, usuario, clave, telefono } = request.body
@@ -32,7 +30,7 @@ module.exports = async function (fastify, opts) {
       const twitter = new TwitterPagina(usuario, clave, telefono)
       try {
         await twitter.iniciar();
-        await twitter.post(`${texto} #${++num}`, fileUrl);
+        await twitter.post(texto, fileUrl);
         await twitter.close();
         reply.send(twitter.publicaciones);
       } catch (error) {
