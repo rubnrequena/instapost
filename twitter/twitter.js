@@ -1,17 +1,16 @@
 'use strict';
 const fs = require('fs')
-const puppeteer = require("puppeteer-core");
+const puppeteer = require('puppeteer-core');
 
 const DOM = require('./dom');
 
 const NETWORK_IDLE = { waitUntil: "networkidle2" };
 
-/** @type {puppeteer.Browser} */
-let navegador;
-
 class TwitterPagina {
   /** @type {puppeteer.Page} */
   pagina
+  /** @type {puppeteer.Browser} */
+  navegador
 
   usuario
   clave
@@ -34,14 +33,11 @@ class TwitterPagina {
    * @returns {Promise<TwitterPagina>}
   */
   async iniciar() {
-    if (!navegador) {
-      navegador = await puppeteer.launch({
-        headless: process.env.HEADLESS == 'true' ? true : false,
-        executablePath: process.env.CHROME_EXE,
-        userDataDir: process.env.CHROME_USER,
-      })
-    }
-    this.pagina = await navegador.newPage();
+    this.navegador = await puppeteer.launch({
+      headless: process.env.HEADLESS == 'true' ? true : false,
+      executablePath: process.env.CHROME_EXE
+    })
+    this.pagina = await navegador.nuevaPagina()
     await this.pagina.goto("https://twitter.com/login", NETWORK_IDLE);
     await iniciar_sesion(this.pagina, this.usuario, this.clave, this.telefono)
     return this;
@@ -55,23 +51,35 @@ class TwitterPagina {
   post(texto, imagen) {
     return new Promise(async (resolve, reject) => {
       if (!texto || texto.length == 0) return reject('No se ha indicado texto a publicar')
-      if (!fs.existsSync(imagen)) return reject(`Imagen ${imagenUri} no existe`)
+      if (imagen)
+        if (!fs.existsSync(imagen)) return reject(`Imagen ${imagenUri} no existe`)
 
       await Promise.all([
         this.pagina.waitForNavigation(NETWORK_IDLE),
         this.pagina.goto('https://twitter.com/compose/tweet'),
-      ])
+      ]).catch(this.onError)
 
-      const uploadInput = await this.pagina.waitForSelector(DOM.UPLOAD_INPUT);
-      uploadInput.uploadFile(imagen);
+      if (imagen) {
+        const uploadInput = await this.pagina.waitForSelector(DOM.UPLOAD_INPUT);
+        uploadInput.uploadFile(imagen);
+      }
+      //await this.pagina.screenshot({ path: `mensaje_${this.usuario}0.png` });
+      console.log('Escribiendo >', texto, 'en', this.usuario);
+      await this.pagina.type(DOM.MESSAGE_INPUT, texto).catch(this.onError)
 
-      await this.pagina.type(DOM.MESSAGE_INPUT, texto);
-
-      await this.pagina.click(DOM.POST_SUBMIT)
+      //await this.pagina.screenshot({ path: `mensaje_${this.usuario}1.png` });
+      await this.pagina.click(DOM.POST_SUBMIT).catch(this.onError)
       //await this.pagina.waitForSelector('div > div > div > div.css-1dbjc4n.r-18u37iz > a > span')
+
+      const alert = await this.pagina.$(DOM.ALERT);
+      if (alert) {
+        console.error('Error al publicar, intentalo nuevamente');
+        await this.pagina.waitForTimeout(2000);
+        await this.pagina.click(DOM.POST_SUBMIT);
+      }
       await this.pagina.waitForNavigation(NETWORK_IDLE)
 
-      await this.pagina.waitForSelector(DOM.POST_LINKS);
+      await this.pagina.waitForSelector(DOM.POST_LINKS)
       const ultimoPost = await this.pagina.$eval(DOM.POST_LINKS, a => a.href);
       if (ultimoPost) {
         const postId = ultimoPost.split("/").pop();
@@ -85,8 +93,13 @@ class TwitterPagina {
   }
 
   async close() {
-    await cerrarSesion(this.pagina);
+    await cerrarSesion(this.pagina)
     await this.pagina.close();
+    await this.navegador.close();
+  }
+
+  async onError(e) {
+    this.pagina.screenshot({ path: `error${Date.now()}.png` });
   }
 }
 
