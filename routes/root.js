@@ -1,4 +1,6 @@
 'use strict'
+const fetch = require('node-fetch').default;
+const FormData = require('form-data')
 
 module.exports = async function (fastify, opts) {
   fastify.get('/instagram/post', function (request, reply) {
@@ -35,5 +37,38 @@ module.exports = async function (fastify, opts) {
       <input type="submit" value="Publicar">
     </form>
     `)
+  })
+
+  fastify.get('/test', function (request, reply) {
+    const numMsg = Math.floor(Math.random() * 100)
+    const macroguia = new FormData();
+    //macroguia.append('imagen', undefined);
+    macroguia.append('texto', `Hola para macroguia ${numMsg}`);
+    macroguia.append('usuario', "macroguia");
+    macroguia.append('clave', "rubn1987");
+    macroguia.append('telefono', "rubnrequena@gmail.com");
+
+    const sistemasrq = new FormData();
+    //macroguia.append('imagen', undefined);
+    sistemasrq.append('texto', `Hola para sistema SRQ ${numMsg}`);
+    sistemasrq.append('usuario', "sistemassrq");
+    sistemasrq.append('clave', "rub3n.1987");
+    sistemasrq.append('telefono', "twitter@sistsmasrq.com");
+
+    Promise.all([
+      doFetch(macroguia),
+      doFetch(sistemasrq)
+    ]).then(res => {
+      console.log('res :>> ', res);
+      reply.send(res)
+    })
+
+    function doFetch(body) {
+      return new Promise((resolve, reject) => {
+        fetch('http://127.0.0.1:3000/twitter/post', { method: 'POST', body })
+          .then(res => res.json())
+          .then(json => resolve(json));
+      });
+    }
   })
 }
