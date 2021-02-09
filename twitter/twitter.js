@@ -77,18 +77,18 @@ class TwitterPagina {
         await this.pagina.waitForTimeout(2000);
         await this.pagina.click(DOM.POST_SUBMIT);
       }
-      await this.pagina.waitForNavigation(NETWORK_IDLE)
-
-      await this.pagina.waitForSelector(DOM.POST_LINKS)
-      const ultimoPost = await this.pagina.$eval(DOM.POST_LINKS, a => a.href);
-      if (ultimoPost) {
-        const postId = ultimoPost.split("/").pop();
-        this.publicaciones.push({
-          postId,
-          datetime: new Date().toISOString()
-        })
-        resolve(this)
-      }
+      this.pagina.waitForNavigation(NETWORK_IDLE).finally(async () => {
+        await this.pagina.waitForSelector(DOM.POST_LINKS)
+        const ultimoPost = await this.pagina.$eval(DOM.POST_LINKS, a => a.href);
+        if (ultimoPost) {
+          const postId = ultimoPost.split("/").pop();
+          this.publicaciones.push({
+            postId,
+            datetime: new Date().toISOString()
+          })
+          resolve(this)
+        }
+      })
     });
   }
 
