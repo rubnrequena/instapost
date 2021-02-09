@@ -65,7 +65,9 @@ module.exports = async function (fastify, opts) {
 
     function doFetch(body) {
       return new Promise((resolve, reject) => {
-        fetch('http://127.0.0.1:3000/twitter/post', { method: 'POST', body })
+        const host = process.env.FASTIFY_ADDRESS;
+        const port = process.env.PORT;
+        fetch(`http://${host}:${port}/twitter/post`, { method: 'POST', body })
           .then(res => res.json())
           .then(json => resolve(json));
       });
