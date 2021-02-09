@@ -63,13 +63,10 @@ class TwitterPagina {
         const uploadInput = await this.pagina.waitForSelector(DOM.UPLOAD_INPUT);
         uploadInput.uploadFile(imagen);
       }
-      //await this.pagina.screenshot({ path: `mensaje_${this.usuario}0.png` });
       console.log('Escribiendo >', texto, 'en', this.usuario);
       await this.pagina.type(DOM.MESSAGE_INPUT, texto).catch(this.onError)
 
-      //await this.pagina.screenshot({ path: `mensaje_${this.usuario}1.png` });
       await this.pagina.click(DOM.POST_SUBMIT).catch(this.onError)
-      //await this.pagina.waitForSelector('div > div > div > div.css-1dbjc4n.r-18u37iz > a > span')
 
       const alert = await this.pagina.$(DOM.ALERT);
       if (alert) {
