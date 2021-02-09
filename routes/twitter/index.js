@@ -35,6 +35,7 @@ module.exports = async function (fastify, opts) {
       twitter.close();
     } catch (error) {
       console.log('error :>> ', error);
+      await twitter.screenshot('ultimo_error');
       twitter.close();
     }
   })
