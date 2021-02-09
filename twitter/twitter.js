@@ -37,7 +37,7 @@ class TwitterPagina {
       headless: process.env.HEADLESS == 'true' ? true : false,
       executablePath: process.env.CHROME_EXE
     })
-    this.pagina = await navegador.nuevaPagina()
+    this.pagina = await this.navegador.newPage()
     await this.pagina.goto("https://twitter.com/login", NETWORK_IDLE);
     await iniciar_sesion(this.pagina, this.usuario, this.clave, this.telefono)
     return this;
