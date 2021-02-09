@@ -7,4 +7,6 @@ chromeuser
 # vscode
 .vscode
 
+.env
+
 .nyc_output
