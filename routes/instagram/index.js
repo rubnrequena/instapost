@@ -20,7 +20,7 @@ const POST_SCHEMA = {
 }
 
 module.exports = async function (fastify, opts) {
-  fastify.post('/', POST_SCHEMA, function (request, reply) {
+  fastify.post('/post', POST_SCHEMA, function (request, reply) {
     const { texto, usuario, clave, telefono } = request.body
     const file = request.raw.files.imagen
     const ext = file.name.split(".").pop()

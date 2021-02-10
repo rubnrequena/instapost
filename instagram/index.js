@@ -4,21 +4,22 @@ const puppeteer = require("puppeteer-core");
 
 const DOM = require("../typings/dom");
 const { INICIO_SESION, ACEPTAR_COOKIES } = require("../typings/mensajes");
+const { getRandomInt } = require('../utils/number');
 
 const DEVICE = puppeteer.devices[process.env.DEVICE];
 const NETWORK_IDLE = { waitUntil: "networkidle2" };
+
 
 /** @type {puppeteer.Browser} */
 let browser;
 async function init() {
   console.log("INICIALIZANDO INSTAGRAM");
-  if (!browser) {
-    browser = await puppeteer.launch({
-      headless: process.env.HEADLESS,
-      executablePath: process.env.CHROME_EXE,
-      userDataDir: process.env.CHROME_USER,
-    });
-  }
+  browser = await puppeteer.launch({
+    headless: process.env.HEADLESS == "true",
+    executablePath: process.env.CHROME_EXE,
+    userDataDir: process.env.CHROME_USER,
+    slowMo: 100
+  });
   return browser;
 }
 /**
@@ -29,12 +30,15 @@ async function init() {
 function page(usuario, clave) {
   return new Promise(async (resolve, reject) => {
     const pagina = await browser.newPage();
+
     await pagina.emulate(DEVICE);
     await pagina.goto("https://instagram.com", NETWORK_IDLE);
+    await pagina.waitForTimeout(getRandomInt(3, 5) * 1000)
 
     await aceptarCookies(pagina);
     rechazarPantallaInicio(pagina);
     rechazarNotificaciones(pagina);
+    await pagina.waitForTimeout(getRandomInt(2, 5) * 1000)
 
     const postButton = await pagina.$(
       DOM.POST_BUTTON
@@ -43,6 +47,7 @@ function page(usuario, clave) {
       console.log('Sesion iniciada! 🚀');
       return resolve(pagina);
     }
+    await pagina.waitForTimeout(getRandomInt(2, 5) * 1000)
 
     console.log(INICIO_SESION);
 
@@ -64,10 +69,13 @@ function page(usuario, clave) {
         DOM.LOGIN_SUBMIT
       );
       await pagina.waitForNavigation(NETWORK_IDLE);
+      await pagina.waitForTimeout(getRandomInt(2, 5) * 1000)
 
-      console.log('RECHAZANDO GUARDAR SESION')
-      const noGuardarSesion = await pagina.waitForSelector(DOM.RECHAZAR_GUARDAR_SESION)
-      await noGuardarSesion.click()
+      console.log('RECHAZANDO GUARDAR SESION');
+      const noGuardarSesion = await pagina.$(DOM.RECHAZAR_GUARDAR_SESION);
+      if (noGuardarSesion) {
+        await noGuardarSesion.click();
+      }
       console.log('Sesion iniciada con exito..');
       resolve(pagina);
     } else {
@@ -136,11 +144,11 @@ function cerrarSesion(pagina) {
     console.log('Cerrando sesion');
     const botonCerrar = await pagina.waitForSelector(DOM.CERRAR_SESION)
     const timer = setInterval(() => botonCerrar.click(), 1000);
-    console.log('Confirmando cierre de sesion');
     const aceptarBoton = await pagina.waitForSelector(DOM.ACEPTAR_MODAL)
     clearInterval(timer);
     aceptarBoton.click();
-    await pagina.waitForNavigation(NETWORK_IDLE)
+    await pagina.waitForNavigation(NETWORK_IDLE);
+    console.log('Sesion cerrada exitosamente');
     resolve();
   });
 }
@@ -165,15 +173,20 @@ function post(pagina, texto, imagen) {
     ]);
     await fileChooser.accept([imagenUri]);
 
+    await pagina.waitForTimeout(getRandomInt(2, 5) * 1000)
+
     await pagina.waitForSelector(DOM.PUBLICAR_SIGUIENTE);
     await pagina.click(DOM.PUBLICAR_SIGUIENTE);
+
+    await pagina.waitForTimeout(getRandomInt(2, 5) * 1000)
 
     await pagina.waitForSelector(DOM.PUBLICAR_MENSAJE);
     await pagina.type(DOM.PUBLICAR_MENSAJE, texto);
 
     await pagina.click(DOM.PUBLICAR_SUBMIT);
 
-    await pagina.waitForNavigation(NETWORK_IDLE)
+    await pagina.waitForNavigation(NETWORK_IDLE);
+    await pagina.waitForTimeout(getRandomInt(2, 5) * 1000)
 
     await pagina.waitForSelector(DOM.ULTIMO_POST);
     const ultimoPost = await pagina.$eval(DOM.ULTIMO_POST, (a => {
@@ -186,6 +199,7 @@ function post(pagina, texto, imagen) {
     resolve(ultimoPost);
     await cerrarSesion(pagina);
     await pagina.close();
+    browser.close();
   });
 }
 module.exports = {
