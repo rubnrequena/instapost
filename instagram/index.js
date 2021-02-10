@@ -67,6 +67,7 @@ function page(usuario, clave) {
         DOM.LOGIN_SUBMIT
       );
       await pagina.waitForNavigation(NETWORK_IDLE);
+      await pagina.waitForTimeout(getRandomInt(2, 5) * 1000)
 
       console.log('RECHAZANDO GUARDAR SESION')
       const noGuardarSesion = await pagina.waitForSelector(DOM.RECHAZAR_GUARDAR_SESION)
