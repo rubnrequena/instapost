@@ -9,6 +9,7 @@ const { getRandomInt } = require('../utils/number');
 const DEVICE = puppeteer.devices[process.env.DEVICE];
 const NETWORK_IDLE = { waitUntil: "networkidle2" };
 
+
 /** @type {puppeteer.Browser} */
 let browser;
 async function init() {
@@ -29,6 +30,7 @@ async function init() {
 function page(usuario, clave) {
   return new Promise(async (resolve, reject) => {
     const pagina = await browser.newPage();
+
     await pagina.emulate(DEVICE);
     await pagina.goto("https://instagram.com", NETWORK_IDLE);
     await pagina.waitForTimeout(getRandomInt(3, 5) * 1000)
@@ -142,7 +144,6 @@ function cerrarSesion(pagina) {
     console.log('Cerrando sesion');
     const botonCerrar = await pagina.waitForSelector(DOM.CERRAR_SESION)
     const timer = setInterval(() => botonCerrar.click(), 1000);
-    console.log('Confirmando cierre de sesion');
     const aceptarBoton = await pagina.waitForSelector(DOM.ACEPTAR_MODAL)
     clearInterval(timer);
     aceptarBoton.click();
@@ -198,6 +199,7 @@ function post(pagina, texto, imagen) {
     resolve(ultimoPost);
     await cerrarSesion(pagina);
     await pagina.close();
+    browser.close();
   });
 }
 module.exports = {
