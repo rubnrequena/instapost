@@ -12,13 +12,12 @@ const NETWORK_IDLE = { waitUntil: "networkidle2" };
 let browser;
 async function init() {
   console.log("INICIALIZANDO INSTAGRAM");
-  if (!browser) {
-    browser = await puppeteer.launch({
-      headless: process.env.HEADLESS,
-      executablePath: process.env.CHROME_EXE,
-      userDataDir: process.env.CHROME_USER,
-    });
-  }
+  browser = await puppeteer.launch({
+    headless: process.env.HEADLESS == "true",
+    executablePath: process.env.CHROME_EXE,
+    userDataDir: process.env.CHROME_USER,
+    slowMo: 100
+  });
   return browser;
 }
 /**
