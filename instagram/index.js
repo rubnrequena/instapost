@@ -69,9 +69,7 @@ function page(usuario, clave) {
       await pagina.waitForNavigation(NETWORK_IDLE);
       await pagina.waitForTimeout(getRandomInt(2, 5) * 1000)
 
-      console.log('RECHAZANDO GUARDAR SESION')
-      const noGuardarSesion = await pagina.waitForSelector(DOM.RECHAZAR_GUARDAR_SESION)
-      await noGuardarSesion.click()
+      console.log('RECHAZANDO GUARDAR SESION');
       console.log('Sesion iniciada con exito..');
       resolve(pagina);
     } else {
@@ -144,7 +142,8 @@ function cerrarSesion(pagina) {
     const aceptarBoton = await pagina.waitForSelector(DOM.ACEPTAR_MODAL)
     clearInterval(timer);
     aceptarBoton.click();
-    await pagina.waitForNavigation(NETWORK_IDLE)
+    await pagina.waitForNavigation(NETWORK_IDLE);
+    console.log('Sesion cerrada exitosamente');
     resolve();
   });
 }
