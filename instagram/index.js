@@ -70,6 +70,10 @@ function page(usuario, clave) {
       await pagina.waitForTimeout(getRandomInt(2, 5) * 1000)
 
       console.log('RECHAZANDO GUARDAR SESION');
+      const noGuardarSesion = await pagina.$(DOM.RECHAZAR_GUARDAR_SESION);
+      if (noGuardarSesion) {
+        await noGuardarSesion.click();
+      }
       console.log('Sesion iniciada con exito..');
       resolve(pagina);
     } else {
