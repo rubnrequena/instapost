@@ -1,6 +1,7 @@
 'use strict'
 
 const twitter = require('../../twitter')
+const TwitterPagina = require('../../twitter/twitter')
 
 const POST_SCHEMA = {
   schema: {
@@ -8,35 +9,46 @@ const POST_SCHEMA = {
     body: {
       type: 'object',
       properties: {
-        imagen: { type: 'object' },
+        imagen: { type: "object" },
         texto: { type: 'string' },
         usuario: { type: 'string' },
-        clave: { type: 'string' }
+        clave: { type: 'string' },
+        telefono: { type: 'string' },
       },
-      required: ['imagen', 'texto']
+      required: ['texto', 'usuario', 'clave', 'telefono']
     }
   }
 }
 
 module.exports = async function (fastify, opts) {
-  fastify.post('/post', POST_SCHEMA, function (request, reply) {
-    const { texto, usuario, clave, telefono } = request.body
-    const file = request.raw.files.imagen
+  fastify.post('/post', POST_SCHEMA, async function (request, reply) {
+    const { texto, usuario, clave, telefono } = request.body;
+    let fileUrl;
+    if (request.raw.files) {
+      fileUrl = await moverArchivo(request.raw.files.imagen);
+    }
+    const twitter = new TwitterPagina(usuario, clave, telefono)
+    try {
+      await twitter.iniciar();
+      await twitter.post(texto, fileUrl);
+      reply.send(twitter.publicaciones);
+      twitter.close();
+    } catch (error) {
+      console.log('error :>> ', error);
+      await twitter.screenshot('ultimo_error');
+      twitter.close();
+    }
+  })
+}
+
+function moverArchivo(file) {
+  return new Promise((resolve, reject) => {
     const ext = file.name.split(".").pop()
     const fileName = `${file.md5}.${ext}`
     const fileUrl = `c:\\cache\\${fileName}`
-    file.mv(fileUrl, (err) => {
-      twitter.init().then(navegador => {
-        return twitter.page(usuario, clave, telefono).then(pagina => {
-           return twitter.post(pagina, texto, fileUrl).then((post) => {
-            console.log('Publicacion exitosa...', post);
-            reply.send('Su publicacion esta siendo procesada');
-          }).catch(error => console.error(error));
-        })
-      }).catch(error => {
-        reply.send('⚠ Ha ocurrido un error durante la publicacion ⚠')
-        console.log(error);
-      })
+    file.mv(fileUrl, async (err) => {
+      if (err) return reject(err)
+      resolve(fileUrl)
     })
-  })
+  });
 }

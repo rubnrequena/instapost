@@ -22,6 +22,8 @@
     "fastify-formbody": "^5.0.0",
     "fastify-multipart": "^3.3.1",
     "fastify-plugin": "^3.0.0",
+    "form-data": "^3.0.0",
+    "node-fetch": "^2.6.1",
     "puppeteer-core": "^5.5.0"
   },
   "devDependencies": {
