@@ -4,6 +4,7 @@ const puppeteer = require("puppeteer-core");
 
 const DOM = require("../typings/dom");
 const { INICIO_SESION, ACEPTAR_COOKIES } = require("../typings/mensajes");
+const { getRandomInt } = require('../utils/number');
 
 const DEVICE = puppeteer.devices[process.env.DEVICE];
 const NETWORK_IDLE = { waitUntil: "networkidle2" };
@@ -30,10 +31,12 @@ function page(usuario, clave) {
     const pagina = await browser.newPage();
     await pagina.emulate(DEVICE);
     await pagina.goto("https://instagram.com", NETWORK_IDLE);
+    await pagina.waitForTimeout(getRandomInt(3, 5) * 1000)
 
     await aceptarCookies(pagina);
     rechazarPantallaInicio(pagina);
     rechazarNotificaciones(pagina);
+    await pagina.waitForTimeout(getRandomInt(2, 5) * 1000)
 
     const postButton = await pagina.$(
       DOM.POST_BUTTON
@@ -42,6 +45,7 @@ function page(usuario, clave) {
       console.log('Sesion iniciada! 🚀');
       return resolve(pagina);
     }
+    await pagina.waitForTimeout(getRandomInt(2, 5) * 1000)
 
     console.log(INICIO_SESION);
 
@@ -164,15 +168,20 @@ function post(pagina, texto, imagen) {
     ]);
     await fileChooser.accept([imagenUri]);
 
+    await pagina.waitForTimeout(getRandomInt(2, 5) * 1000)
+
     await pagina.waitForSelector(DOM.PUBLICAR_SIGUIENTE);
     await pagina.click(DOM.PUBLICAR_SIGUIENTE);
+
+    await pagina.waitForTimeout(getRandomInt(2, 5) * 1000)
 
     await pagina.waitForSelector(DOM.PUBLICAR_MENSAJE);
     await pagina.type(DOM.PUBLICAR_MENSAJE, texto);
 
     await pagina.click(DOM.PUBLICAR_SUBMIT);
 
-    await pagina.waitForNavigation(NETWORK_IDLE)
+    await pagina.waitForNavigation(NETWORK_IDLE);
+    await pagina.waitForTimeout(getRandomInt(2, 5) * 1000)
 
     await pagina.waitForSelector(DOM.ULTIMO_POST);
     const ultimoPost = await pagina.$eval(DOM.ULTIMO_POST, (a => {
