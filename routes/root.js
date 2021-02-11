@@ -8,8 +8,8 @@ module.exports = async function (fastify, opts) {
     <form action="/instagram/post" method="post" enctype="multipart/form-data">
       <input type="file" name="imagen">
       <input type="text" name="texto" value="world">
-      <input type="text" name="usuario">
-      <input type="text" name="clave">
+      <input type="text" name="usuario" value="rubnrequena@gmail.com">
+      <input type="text" name="clave" value="srq87.insta">
       <input type="submit" value="Publicar">
     </form>
     `)

@@ -1,6 +1,6 @@
 'use strict'
 
-const igm = require('../../instagram');
+const Instagram = require('../../instagram');
 
 const POST_SCHEMA = {
   schema: {
@@ -25,15 +25,13 @@ module.exports = async function (fastify, opts) {
     const file = request.raw.files.imagen
     const ext = file.name.split(".").pop()
     const fileName = `${file.md5}.${ext}`
-    file.mv(`c:\\cache\\${fileName}`, (err) => {
-      igm.init().then(navegador => {
-        return igm.page(usuario, clave, telefono).then(pagina => {
-          reply.send('Su publicacion esta siendo procesada')
-          return igm.post(pagina, texto, fileName).then((post) => {
-            console.log('Publicacion exitosa...', post);
-          })
-        })
-      }).catch(error => reply.send({ error }))
+    const fileUrl = `c:\\cache\\${fileName}`
+    file.mv(fileUrl, async (err) => {
+      const igm = new Instagram(usuario, clave);
+      await igm.login();
+      const { media } = await igm.post(texto, fileUrl);
+      reply.send({ media })
+      await igm.logout();
     })
   })
 }
