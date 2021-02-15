@@ -21,8 +21,6 @@ class Instagram {
     console.log('Login > OK');
     const media = await this.client.uploadPhoto({ photo: imagen, caption: mensaje, post: 'feed' });
     console.log('Post > OK');
-    await this.logout();
-    console.log('Logout > OK');
     return media;
   }
 }
