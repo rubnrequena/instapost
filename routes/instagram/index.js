@@ -28,10 +28,11 @@ module.exports = async function (fastify, opts) {
     const fileUrl = `c:\\cache\\${fileName}`
     file.mv(fileUrl, async (err) => {
       const igm = new Instagram(usuario, clave);
-      await igm.login();
-      const { media } = await igm.post(texto, fileUrl);
-      reply.send({ media })
-      await igm.logout();
+      igm.post(texto, fileUrl)
+        .then(({ media }) => reply.send(media))
+        .catch(error => {
+          console.error('ERROR:', error);
+        })
     })
   })
 }

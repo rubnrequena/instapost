@@ -7,20 +7,23 @@ class Instagram {
   }
 
   login() {
-    return this.client
-      .login()
-      .then(() => {
-        return this.client
-          .getProfile()
-          .then(console.log)
-      })
+    return this.client.login()
   }
   logout() {
     return this.client.logout();
   }
+  getProfile() {
+    return this.client.getProfile();
+  }
 
-  post(mensaje, imagen) {
-    return this.client.uploadPhoto({ photo: imagen, caption: mensaje, post: 'feed' })
+  async post(mensaje, imagen) {
+    await this.login();
+    console.log('Login > OK');
+    const media = await this.client.uploadPhoto({ photo: imagen, caption: mensaje, post: 'feed' });
+    console.log('Post > OK');
+    await this.logout();
+    console.log('Logout > OK');
+    return media;
   }
 }
 module.exports = Instagram
