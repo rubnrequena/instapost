@@ -27,17 +27,16 @@ module.exports = async function (fastify, opts) {
     if (request.raw.files) {
       fileUrl = await moverArchivo(request.raw.files.imagen);
     }
-    const twitter = new TwitterPagina(usuario, clave, telefono);
-    twitter.iniciar().then(() => {
-      twitter.post(texto, fileUrl).then(() => {
-        reply.send(twitter.publicaciones);
-        twitter.close();
-      }).catch(error => {
-        console.log('error :>> ', error);
-        twitter.screenshot('ultimo_error');
-        twitter.close();
-      })
-    })
+    const twitter = new TwitterPagina(usuario, clave, telefono)
+    try {
+      await twitter.iniciar();
+      await twitter.post(texto, fileUrl);
+      reply.send(twitter.publicaciones);
+      twitter.close();
+    } catch (error) {
+      console.log('error :>> ', error);
+      twitter.close();
+    }
   })
 }
 
