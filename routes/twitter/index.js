@@ -30,12 +30,16 @@ module.exports = async function (fastify, opts) {
     const twitter = new TwitterPagina(usuario, clave, telefono)
     try {
       await twitter.iniciar();
-      await twitter.post(texto, fileUrl);
+      await twitter.post(texto, fileUrl).catch(e => {
+        console.log('error :>> ', error);
+        twitter.screenshot('ultimo_error')
+      })
       reply.send(twitter.publicaciones);
-      twitter.close();
+      await twitter.close();
     } catch (error) {
+      reply.send({ error: 'ocurrio un error' });
       console.log('error :>> ', error);
-      twitter.close();
+      await twitter.close();
     }
   })
 }

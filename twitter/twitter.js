@@ -59,10 +59,13 @@ class TwitterPagina {
         this.pagina.goto('https://twitter.com/compose/tweet'),
       ])
       if (imagen) {
-        const uploadInput = await this.pagina.waitForSelector(DOM.UPLOAD_INPUT);
-        uploadInput.uploadFile(imagen);
+        const uploadInput = await this.pagina.waitForSelector(DOM.UPLOAD_INPUT, { timeout: 5000 }).catch(async e => {
+          const name = `C:\\cache\\upload_error_${Date.now()}.jpg`;
+          console.log(`error al subir archivo > ${name}`);
+          await this.pagina.screenshot({ path: name });
+        })
+        if (uploadInput) uploadInput.uploadFile(imagen)
       }
-      console.log('Escribiendo >', texto, 'en', this.usuario);
       await this.pagina.type(DOM.MESSAGE_INPUT, texto)
 
       await this.pagina.click(DOM.POST_SUBMIT)
@@ -95,7 +98,7 @@ class TwitterPagina {
   }
 
   async screenshot(label) {
-    await this.pagina.screenshot({ path: `${label}.png` });
+    await this.pagina.screenshot({ path: `assets/${label}.jpg`, quality: 50 });
   }
 }
 
