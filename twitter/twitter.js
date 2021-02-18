@@ -15,6 +15,7 @@ class TwitterPagina {
   usuario
   clave
   telefono
+  correo
 
   /** @type {Post[]} */
   publicaciones = []
@@ -23,11 +24,13 @@ class TwitterPagina {
    * @param {String} usuario 
    * @param {String} clave 
    * @param {String} telefono 
+   * @param {String} correo 
    */
-  constructor(usuario, clave, telefono) {
+  constructor(usuario, clave, telefono, correo) {
     this.usuario = usuario;
     this.clave = clave;
     this.telefono = telefono;
+    this.correo = correo
   }
   /** 
    * @returns {Promise<TwitterPagina>}
@@ -39,7 +42,7 @@ class TwitterPagina {
     })
     this.pagina = await this.navegador.newPage()
     await this.pagina.goto("https://twitter.com/login", NETWORK_IDLE);
-    await iniciar_sesion(this.pagina, this.usuario, this.clave, this.telefono)
+    await iniciar_sesion(this.pagina, this.usuario, this.clave, this.telefono, this.correo)
     return this;
   }
 
@@ -107,9 +110,10 @@ class TwitterPagina {
  * @param {String} usuario
  * @param {String} clave
  * @param {String} telefono
+ * @param {String} correo
  * @returns {Promise<puppeteer.Page>}
  */
-function iniciar_sesion(pagina, usuario, clave, telefono) {
+function iniciar_sesion(pagina, usuario, clave, telefono, correo) {
   return new Promise(async (resolve, reject) => {
     const postBoton = await pagina.$(DOM.POST_BUTTON);
     if (postBoton) return resolve(pagina)
@@ -129,7 +133,7 @@ function iniciar_sesion(pagina, usuario, clave, telefono) {
     }
     const usuario_input = await pagina.$(DOM.USUARIO_INPUT);
     if (usuario_input) {
-      await pagina.type(DOM.USUARIO_INPUT, telefono);
+      await pagina.type(DOM.USUARIO_INPUT, correo);
       await pagina.type(DOM.CLAVE_INPUT, clave);
       await Promise.all([
         pagina.click(DOM.SESSION_SUBMIT),

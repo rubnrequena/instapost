@@ -14,20 +14,21 @@ const POST_SCHEMA = {
         usuario: { type: 'string' },
         clave: { type: 'string' },
         telefono: { type: 'string' },
+        correo: { type: 'string' },
       },
-      required: ['texto', 'usuario', 'clave', 'telefono']
+      required: ['texto', 'usuario', 'clave', 'telefono', 'correo']
     }
   }
 }
 
 module.exports = async function (fastify, opts) {
   fastify.post('/post', POST_SCHEMA, async function (request, reply) {
-    const { texto, usuario, clave, telefono } = request.body;
+    const { texto, usuario, clave, telefono, correo } = request.body;
     let fileUrl;
     if (request.raw.files) {
       fileUrl = await moverArchivo(request.raw.files.imagen);
     }
-    const twitter = new TwitterPagina(usuario, clave, telefono)
+    const twitter = new TwitterPagina(usuario, clave, telefono, correo)
     try {
       await twitter.iniciar();
       await twitter.post(texto, fileUrl).catch(e => {
