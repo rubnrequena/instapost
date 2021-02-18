@@ -60,9 +60,7 @@ class TwitterPagina {
       ])
       if (imagen) {
         const uploadInput = await this.pagina.waitForSelector(DOM.UPLOAD_INPUT, { timeout: 5000 }).catch(async e => {
-          const name = `C:\\cache\\upload_error_${Date.now()}.jpg`;
-          console.log(`error al subir archivo > ${name}`);
-          await this.pagina.screenshot({ path: name });
+          await this.screenshot('upload_error');
         })
         if (uploadInput) uploadInput.uploadFile(imagen)
       }
@@ -98,7 +96,9 @@ class TwitterPagina {
   }
 
   async screenshot(label) {
-    await this.pagina.screenshot({ path: `assets/${label}.jpg`, quality: 50 });
+    label = `assets/${label}_${Date.now()}.jpg`
+    console.log('Error :>>', label);
+    return this.pagina.screenshot({ path: label, quality: 50 });
   }
 }
 
