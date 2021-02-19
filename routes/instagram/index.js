@@ -31,7 +31,8 @@ module.exports = async function (fastify, opts) {
       igm.post(texto, fileUrl)
         .then(({ media }) => reply.send(media))
         .catch(error => {
-          console.error('ERROR:', error);
+          reply.send(error.error)
+          console.error('ERROR:', error.error);
         })
     })
   })
