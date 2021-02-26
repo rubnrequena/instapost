@@ -26,14 +26,20 @@ module.exports = async function (fastify, opts) {
         <input type="text" name="usuario">
       </div>
       <div>
-      <label>Telefono</label>
-      <input type="text" name="telefono"></div>
+        <label>Telefono</label>
+        <input type="text" name="telefono"></div>
       <div>
-      <label>Clave</label>
-      <input type="text" name="clave"></div>
       <div>
-      <label>Imagen</label>
-      <input type="file" name="imagen"></div>
+        <label>Correo</label>
+        <input type="text" name="correo"></div>
+      <div>
+        <label>Clave</label>
+        <input type="text" name="clave">
+      </div>
+      <div>
+        <label>Imagen</label>
+        <input type="file" name="imagen">
+      </div>
       <input type="submit" value="Publicar">
     </form>
     `)
