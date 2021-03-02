@@ -12,7 +12,6 @@ const POST_SCHEMA = {
         texto: { type: 'string' },
         usuario: { type: 'string' },
         clave: { type: 'string' },
-        telefono: { type: 'string' },
       },
       required: ['imagen', 'texto']
     }
@@ -21,7 +20,7 @@ const POST_SCHEMA = {
 
 module.exports = async function (fastify, opts) {
   fastify.post('/post', POST_SCHEMA, function (request, reply) {
-    const { texto, usuario, clave, telefono } = request.body
+    const { texto, usuario, clave } = request.body
     const file = request.raw.files.imagen
     const ext = file.name.split(".").pop()
     const fileName = `${file.md5}.${ext}`
