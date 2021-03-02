@@ -27,7 +27,7 @@ module.exports = async function (fastify, opts) {
     const ext = file.name.split(".").pop()
     const fileName = `${file.md5}.${ext}`
     const fileUrl = path.resolve(`cache/${fileName}`)
-    console.log(fileUrl);
+
     file.mv(fileUrl, async (err) => {
       const igm = new Instagram(usuario, clave);
       igm.post(texto, fileUrl)

@@ -1,6 +1,6 @@
 'use strict'
 
-const twitter = require('../../twitter')
+const path = require('path');
 const TwitterPagina = require('../../twitter/twitter')
 
 const POST_SCHEMA = {
@@ -49,7 +49,7 @@ function moverArchivo(file) {
   return new Promise((resolve, reject) => {
     const ext = file.name.split(".").pop()
     const fileName = `${file.md5}.${ext}`
-    const fileUrl = `c:\\cache\\${fileName}`
+    const fileUrl = path.resolve(`cache/${fileName}`)
     file.mv(fileUrl, async (err) => {
       if (err) return reject(err)
       resolve(fileUrl)
