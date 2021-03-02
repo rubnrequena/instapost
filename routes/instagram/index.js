@@ -1,5 +1,7 @@
 'use strict'
 
+const path = require('path');
+
 const Instagram = require('../../instagram');
 
 const POST_SCHEMA = {
@@ -24,7 +26,8 @@ module.exports = async function (fastify, opts) {
     const file = request.raw.files.imagen
     const ext = file.name.split(".").pop()
     const fileName = `${file.md5}.${ext}`
-    const fileUrl = `c:\\cache\\${fileName}`
+    const fileUrl = path.resolve(`cache/${fileName}`)
+    console.log(fileUrl);
     file.mv(fileUrl, async (err) => {
       const igm = new Instagram(usuario, clave);
       igm.post(texto, fileUrl)
