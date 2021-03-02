@@ -38,11 +38,13 @@ class TwitterPagina {
   async iniciar() {
     this.navegador = await puppeteer.launch({
       headless: true,
-      args: ['--no-sandbox', '--disable-setuid-sandbox']
     })
     this.pagina = await this.navegador.newPage()
+    console.log('SYS >> Pagina iniciada');
     await this.pagina.goto("https://twitter.com/login", NETWORK_IDLE);
+    console.log('SYS >> Accediendo a https://twitter.com/login');
     await iniciar_sesion(this.pagina, this.usuario, this.clave, this.telefono, this.correo)
+    console.log('SYS >> Sesion iniciada');
     return this;
   }
 
@@ -117,7 +119,7 @@ function iniciar_sesion(pagina, usuario, clave, telefono, correo) {
   return new Promise(async (resolve, reject) => {
     const postBoton = await pagina.$(DOM.POST_BUTTON);
     if (postBoton) return resolve(pagina)
-    await pagina.type(DOM.USUARIO_INPUT, usuario);
+    await pagina.type(DOM.USUARIO_INPUT, usuario).catch(e => console.log('ERROR NO EXISTE INPUT'))
     await pagina.type(DOM.CLAVE_INPUT, clave);
     await Promise.all([
       pagina.click(DOM.SESSION_SUBMIT),

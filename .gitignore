@@ -3,6 +3,7 @@
 # Dependency directories
 node_modules
 chromeuser
+cache
 
 # vscode
 .vscode
