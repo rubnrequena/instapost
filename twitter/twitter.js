@@ -1,6 +1,6 @@
 'use strict';
 const fs = require('fs')
-const puppeteer = require('puppeteer-core');
+const puppeteer = require('puppeteer');
 
 const DOM = require('./dom');
 
