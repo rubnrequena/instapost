@@ -38,6 +38,7 @@ class TwitterPagina {
   async iniciar() {
     this.navegador = await puppeteer.launch({
       headless: true,
+      args: ['--no-sandbox', '--disable-setuid-sandbox']
     })
     this.pagina = await this.navegador.newPage()
     console.log('SYS >> Pagina iniciada');
