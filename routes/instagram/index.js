@@ -28,9 +28,9 @@ module.exports = async function (fastify, opts) {
     file.mv(fileUrl, async (err) => {
       const igm = new Instagram(usuario, clave);
       igm.post(texto, fileUrl)
-        .then(({ media }) => reply.send(media))
+        .then(({ media }) => reply.send(JSON.stringify(media)))
         .catch(error => {
-          reply.type("text/html").send(error.error)
+          reply.type("text/html").send(JSON.stringify(error.error))
           console.error('ERROR:', error.error);
         })
     })
