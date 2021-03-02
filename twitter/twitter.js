@@ -37,7 +37,8 @@ class TwitterPagina {
   */
   async iniciar() {
     this.navegador = await puppeteer.launch({
-      headless: true
+      headless: true,
+      args: ['--no-sandbox', '--disable-setuid-sandbox']
     })
     this.pagina = await this.navegador.newPage()
     await this.pagina.goto("https://twitter.com/login", NETWORK_IDLE);
