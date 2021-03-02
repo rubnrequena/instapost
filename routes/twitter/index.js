@@ -50,6 +50,7 @@ function moverArchivo(file) {
     const ext = file.name.split(".").pop()
     const fileName = `${file.md5}.${ext}`
     const fileUrl = path.resolve(`cache/${fileName}`)
+    console.log('fileUrl :>> ', fileUrl);
     file.mv(fileUrl, async (err) => {
       if (err) return reject(err)
       resolve(fileUrl)
