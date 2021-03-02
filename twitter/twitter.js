@@ -37,8 +37,7 @@ class TwitterPagina {
   */
   async iniciar() {
     this.navegador = await puppeteer.launch({
-      headless: process.env.HEADLESS == 'true' ? true : false,
-      executablePath: process.env.CHROME_EXE
+      headless: process.env.HEADLESS == 'true' ? true : false
     })
     this.pagina = await this.navegador.newPage()
     await this.pagina.goto("https://twitter.com/login", NETWORK_IDLE);
