@@ -16,7 +16,7 @@ const app = Fastify({
 app.register(require('./app.js'))
 
 // Start listening.
-app.listen(process.env.PORT || 3000, (err) => {
+app.listen(process.env.PORT || 3000, process.env.HOST || "127.0.0.1", (err) => {
   if (err) {
     app.log.error(err)
     process.exit(1)
